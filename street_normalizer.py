@@ -1,14 +1,17 @@
 import osmium as osm
+import get_way_nodes
 import sys
 
-class BoolNormalizer(osm.SimpleHandler):
+class StreetNormalizer(osm.SimpleHandler):
 
     def __init__(self, writer):
-        super(BoolNormalizer, self).__init__()
+        super(StreetNormalizer, self).__init__()
+        self.osmhandler = get_way_nodes.OSMHandler()
+        self.osmhandler.apply_file("/home/likk/data/xuanthuy.osm.pbf")
+        self.street_nodes = self.osmhandler.primary_nodes
         self.writer = writer
 
     def normalize(self, o):
-        primary_nodes = []
         # new tags should be kept in a list so that the order is preserved
         newtags = []
         # pyosmium is much faster writing an original osmium object than
@@ -19,7 +22,6 @@ class BoolNormalizer(osm.SimpleHandler):
             if t.k != 'name':
                 newtags.append(t)
         if o.tags.get('highway') in ['primary', 'secondary', 'tertiary', 'trunk'] and 'name' in o.tags:
-            primary_nodes.append({'name': o.tags['name'].strip(), "nodes": o.nodes})
             if not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
                 temp = "Đường " + o.tags['name']
                 newtags.append(('name', temp))
@@ -27,8 +29,16 @@ class BoolNormalizer(osm.SimpleHandler):
             else:
                 newtags.append(('name', o.tags['name']))
         elif o.tags.get('highway') == 'residential' and 'name' in o.tags:
-            if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm"):
+            if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm") and not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
                 temp = "Ngõ " + o.tags['name']
+                #edit that
+                for each_street in self.street_nodes:
+                    print(o.nodes[0] in each_street['nodes'])
+                    print(o.tags['name'].strip().lower().endswith(each_street['name'].lower()))
+                    if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
+                        temp = temp + " " + each_street['name']
+                        break
+                #end
                 newtags.append(('name', temp))
                 modified = True
             else:
@@ -57,7 +67,7 @@ if __name__ == '__main__':
 
     # path to the output file (OSM or PBF)
     # writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
-    writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm")
+    writer = osm.SimpleWriter("/home/likk/data/xuanthuy1.osm")
     # path to the input file (PBF)
-    BoolNormalizer(writer).apply_file("/home/likk/data/vietnam.osm.pbf")
+    StreetNormalizer(writer).apply_file("/home/likk/data/xuanthuy.osm.pbf")
     writer.close()
