@@ -21,6 +21,8 @@ class StreetNormalizer(osm.SimpleHandler):
         for t in o.tags:
             if t.k != 'name':
                 newtags.append(t)
+
+        # Edit primary street's name
         if o.tags.get('highway') in ['primary', 'secondary', 'tertiary', 'trunk'] and 'name' in o.tags:
             if not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
                 temp = "Đường " + o.tags['name']
@@ -28,21 +30,26 @@ class StreetNormalizer(osm.SimpleHandler):
                 modified = True
             else:
                 newtags.append(('name', o.tags['name']))
+        # edit residential street's name
         elif o.tags.get('highway') == 'residential' and 'name' in o.tags:
-            if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm") and not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
-                temp = "Ngõ " + o.tags['name']
-                #edit that
+            if not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
+                temp = o.tags['name']
+                if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm") and not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
+                    temp = "Ngõ " + temp
                 for each_street in self.street_nodes:
-                    print(o.nodes[0] in each_street['nodes'])
-                    print(o.tags['name'].strip().lower().endswith(each_street['name'].lower()))
                     if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
                         temp = temp + " " + each_street['name']
                         break
-                #end
+
+                    # elif o.nodes[len(o.nodes) - 1].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
+                    #     temp = temp + " " + each_street['name']
+                    #     break
                 newtags.append(('name', temp))
                 modified = True
+                
             else:
                 newtags.append(('name', o.tags['name']))
+
         elif 'name' in o.tags:
             newtags.append(('name', o.tags['name']))
                 
@@ -67,7 +74,7 @@ if __name__ == '__main__':
 
     # path to the output file (OSM or PBF)
     # writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
-    writer = osm.SimpleWriter("/home/likk/data/xuanthuy1.osm")
+    writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm")
     # path to the input file (PBF)
-    StreetNormalizer(writer).apply_file("/home/likk/data/xuanthuy.osm.pbf")
+    StreetNormalizer(writer).apply_file("/home/likk/data/vietnam.osm.pbf")
     writer.close()
