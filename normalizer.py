@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     # path to the output file (OSM or PBF)
     # writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
-    writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm")
+    writer = osm.SimpleWriter("/home/likk/data/vietnam-normalizer.osm.pbf")
     # path to the input file (PBF)
     Normalizer(writer).apply_file("/home/likk/data/vietnam.osm.pbf")
     writer.close()

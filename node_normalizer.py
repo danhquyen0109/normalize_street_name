@@ -31,6 +31,9 @@ class NodeNormalizer(osm.SimpleHandler):
             housenumber = re.sub('nha so|ns|so nha|sn|lo so|day nha|dn', '', housenumber).strip()
             housenumber = re.sub('so|number|no|s|lo', '', housenumber).strip()
 
+            # replace special characters except these "-/\|,:;"
+            housenumber = re.sub('[!@#$%^&*()\[\]\{\}.<>?`~=_+]', '', housenumber).strip()
+
             # eg: 2-4-6 -> 4
             if re.match("^([0-9]+)([|-])([0-9]+)([|-])([0-9]+)$", housenumber):
                 split = re.split("^([0-9]+)([|-])([0-9]+)([|-])([0-9]+)$", housenumber)
