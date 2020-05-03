@@ -1,6 +1,5 @@
 import osmium as osm
 import get_way_nodes
-import sys
 
 class StreetNormalizer(osm.SimpleHandler):
 
