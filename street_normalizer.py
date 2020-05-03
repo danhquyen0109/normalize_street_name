@@ -4,12 +4,11 @@ import sys
 
 class StreetNormalizer(osm.SimpleHandler):
 
-    def __init__(self, writer):
+    def __init__(self):
         super(StreetNormalizer, self).__init__()
         self.osmhandler = get_way_nodes.OSMHandler()
         self.osmhandler.apply_file("/home/likk/data/xuanthuy.osm.pbf")
         self.street_nodes = self.osmhandler.primary_nodes
-        self.writer = writer
 
     def normalize(self, o):
         # new tags should be kept in a list so that the order is preserved
@@ -60,21 +59,21 @@ class StreetNormalizer(osm.SimpleHandler):
         else:
             return o
 
-    def node(self, o):
-        self.writer.add_node(o)
+#     def node(self, o):
+#         self.writer.add_node(o)
 
-    def way(self, o):
-        self.writer.add_way(self.normalize(o))
+#     def way(self, o):
+#         self.writer.add_way(self.normalize(o))
 
-    def relation(self, o):
-        self.writer.add_relation(o)
+#     def relation(self, o):
+#         self.writer.add_relation(o)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    # path to the output file (OSM or PBF)
-    # writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
-    writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm")
-    # path to the input file (PBF)
-    StreetNormalizer(writer).apply_file("/home/likk/data/vietnam.osm.pbf")
-    writer.close()
+#     # path to the output file (OSM or PBF)
+#     # writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
+#     writer = osm.SimpleWriter("/home/likk/data/vietnam1.osm.pbf")
+#     # path to the input file (PBF)
+#     StreetNormalizer(writer).apply_file("/home/likk/data/vietnam.osm.pbf")
+#     writer.close()
