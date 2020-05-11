@@ -6,7 +6,7 @@ class StreetNormalizer(osm.SimpleHandler):
     def __init__(self):
         super(StreetNormalizer, self).__init__()
         self.osmhandler = get_way_nodes.OSMHandler()
-        self.osmhandler.apply_file("/home/likk/data/xuanthuy.osm.pbf")
+        self.osmhandler.apply_file("/home/likk/data/vietnam.osm.pbf")
         self.street_nodes = self.osmhandler.primary_nodes
 
     def normalize(self, o):
