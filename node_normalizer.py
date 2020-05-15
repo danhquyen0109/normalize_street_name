@@ -24,6 +24,7 @@ class NodeNormalizer(osm.SimpleHandler):
 
             # normalize string diacritics
             housenumber = o.tags['addr:housenumber'].strip().lower()
+            housenumber = re.sub(u'đ', 'd', housenumber)
             normal = unicodedata.normalize('NFD', housenumber).encode('ASCII', 'ignore')
             housenumber = normal.decode('ASCII')
             

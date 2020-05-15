@@ -5,9 +5,9 @@ class StreetNormalizer(osm.SimpleHandler):
 
     def __init__(self):
         super(StreetNormalizer, self).__init__()
-        self.osmhandler = get_way_nodes.OSMHandler()
-        self.osmhandler.apply_file("/home/likk/data/vietnam.osm.pbf")
-        self.street_nodes = self.osmhandler.primary_nodes
+        # self.osmhandler = get_way_nodes.OSMHandler()
+        # self.osmhandler.apply_file("/home/likk/data/vietnam.osm.pbf")
+        # self.street_nodes = self.osmhandler.primary_nodes
 
     def normalize(self, o):
         # new tags should be kept in a list so that the order is preserved
@@ -34,10 +34,11 @@ class StreetNormalizer(osm.SimpleHandler):
                 temp = o.tags['name']
                 if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm") and not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
                     temp = "Ngõ " + temp
-                for each_street in self.street_nodes:
-                    if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
-                        temp = temp + " " + each_street['name']
-                        break
+                    modified = True
+                # for each_street in self.street_nodes:
+                #     if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
+                #         temp = temp + " " + each_street['name']
+                #         break
 
                     # elif o.nodes[len(o.nodes) - 1].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
                     #     temp = temp + " " + each_street['name']
@@ -48,8 +49,8 @@ class StreetNormalizer(osm.SimpleHandler):
             else:
                 newtags.append(('name', o.tags['name']))
 
-        elif 'name' in o.tags:
-            newtags.append(('name', o.tags['name']))
+        else:
+            modified = False
                 
         if modified:
             # We have changed tags. Create a new object as a copy of the
