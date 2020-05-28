@@ -64,46 +64,46 @@ class NodeNormalizer(osm.SimpleHandler):
                     else:
                         newtags.append(('addr:street', o.tags['addr:street']))
 
-            # eg: 2/4/6 -> housenumber = 2, street name = "ngõ 4/6"
+            # eg: 2/4/6 -> housenumber = 6, street name = "ngõ 2/4"
             elif re.match("^([0-9]+)([\/])([0-9]+)([\/])([0-9]+)$", housenumber):
                 split = re.split("^([0-9]+)([\/])([0-9]+)([\/])([0-9]+)$", housenumber)
-                newtags.append(('addr:housenumber', split[1]))
+                newtags.append(('addr:housenumber', split[5]))
                 modified = True
 
                 if "addr:street" not in o.tags:
-                    temp = "Ngõ " + str(split[3]) +"/"+ str(split[5])
+                    temp = "Ngõ " + str(split[1]) +"/"+ str(split[3])
                     newtags.append(('addr:street', temp))
                     modified = True
                 else:
                     street = o.tags['addr:street'].strip().lower()
                     if not street.startswith("ngõ") and not street.startswith("ngách") and not street.startswith("hẻm") and not street.startswith("đường") and not street.startswith("phố "):
-                        temp =  "Ngõ " + str(split[3]) +"/"+ str(split[5]) + " đường " + o.tags['addr:street']
+                        temp =  "Ngõ " + str(split[1]) +"/"+ str(split[3]) + " đường " + o.tags['addr:street']
                         newtags.append(('addr:street', temp))
                         modified = True
                     elif street.startswith("đường") or street.startswith("phố "):
-                        temp =  "Ngõ " + str(split[3]) +"/"+ str(split[5]) + " " + o.tags['addr:street']
+                        temp =  "Ngõ " + str(split[1]) +"/"+ str(split[3]) + " " + o.tags['addr:street']
                         newtags.append(('addr:street', temp))
                         modified = True
                     else:
                         newtags.append(('addr:street', o.tags['addr:street']))
-            # eg: 2/4 -> housenumber = 2, street's name = "ngõ 4"
+            # eg: 2/4 -> housenumber = 4, street's name = "ngõ 2"
             elif re.match("^([0-9]+)([\/])([0-9]+)$", housenumber):
                 split = re.split("^([0-9]+)([\/])([0-9]+)$", housenumber)
-                newtags.append(('addr:housenumber', split[1]))
+                newtags.append(('addr:housenumber', split[3]))
                 modified = True    
 
                 if "addr:street" not in o.tags:
-                    temp = "Ngõ " + str(split[3])
+                    temp = "Ngõ " + str(split[1])
                     newtags.append(('addr:street', temp))
                     modified = True
                 else:
                     street = o.tags['addr:street'].strip().lower()
                     if not street.startswith("ngõ") and not street.startswith("ngách") and not street.startswith("hẻm") and not street.startswith("đường") and not street.startswith("phố "):
-                        temp =  "Ngõ " + str(split[3]) + " đường " + o.tags['addr:street']
+                        temp =  "Ngõ " + str(split[1]) + " đường " + o.tags['addr:street']
                         newtags.append(('addr:street', temp))
                         modified = True
                     elif street.startswith("đường") or street.startswith("phố "):
-                        temp =  "Ngõ " + str(split[3]) + " " + o.tags['addr:street']
+                        temp =  "Ngõ " + str(split[1]) + " " + o.tags['addr:street']
                         newtags.append(('addr:street', temp))
                         modified = True
                     else:
