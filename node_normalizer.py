@@ -23,14 +23,17 @@ class NodeNormalizer(osm.SimpleHandler):
         if "addr:housenumber" in o.tags:
 
             # normalize string diacritics
-            housenumber = o.tags['addr:housenumber'].strip().lower()
+            housenumber = o.tags['addr:housenumber'].strip()
+            housenumber = re.sub(u'Đ', 'D', housenumber)
             housenumber = re.sub(u'đ', 'd', housenumber)
             normal = unicodedata.normalize('NFD', housenumber).encode('ASCII', 'ignore')
             housenumber = normal.decode('ASCII')
             
             # replace common vietnamese label
             housenumber = re.sub('nha so|ns|so nha|sn|lo so|day nha|dn', '', housenumber).strip()
-            housenumber = re.sub('so|number|no|s|lo', '', housenumber).strip()
+            housenumber = re.sub('Nha so|Nha So|NS|So nha|So Nha|SN|Lo so|Lo So|Day nha|Day Nha|DN', '', housenumber).strip()
+            housenumber = re.sub('so|number|no|lo', '', housenumber).strip()
+            housenumber = re.sub('So|Number|No|Lo', '', housenumber).strip()
 
             # replace special characters except these "-/\|,:;"
             housenumber = re.sub('[!@#$%^&*()\[\]\{\}.<>?`~=_+]', '', housenumber).strip()
