@@ -20,3 +20,11 @@ class OSMHandler(osm.SimpleHandler):
                 for n in o.nodes:
                     temp.append(n.ref)
                 self.primary_nodes.append({'name': o.tags['name'].strip(), 'nodes': temp})
+
+if __name__ == '__main__':
+
+    osmhandler = OSMHandler()
+    osmhandler.apply_file("/home/likk/data/vietnam.osm.pbf")
+    with open('list_primary_ways.py', 'a', encoding='utf8') as result_file:
+        result_file.write('list_primary_ways = ')
+        result_file.write(str(osmhandler.primary_nodes))

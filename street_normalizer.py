@@ -1,5 +1,5 @@
 import osmium as osm
-import get_way_nodes
+import list_primary_ways as pr_ways
 
 class StreetNormalizer(osm.SimpleHandler):
 
@@ -35,14 +35,14 @@ class StreetNormalizer(osm.SimpleHandler):
                 if not o.tags['name'].strip().lower().startswith("ngõ") and not o.tags['name'].strip().lower().startswith("ngách") and not o.tags['name'].strip().lower().startswith("hẻm") and not o.tags['name'].strip().lower().startswith("đường") and not o.tags['name'].strip().lower().startswith("phố "):
                     temp = "Ngõ " + temp
                     modified = True
-                # for each_street in self.street_nodes:
-                #     if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
-                #         temp = temp + " " + each_street['name']
-                #         break
+                for each_street in pr_ways.list_primary_ways:
+                    if o.nodes[0].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
+                        temp = temp + " " + each_street['name']
+                        break
 
-                    # elif o.nodes[len(o.nodes) - 1].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
-                    #     temp = temp + " " + each_street['name']
-                    #     break
+                    elif o.nodes[len(o.nodes) - 1].ref in each_street['nodes'] and not o.tags['name'].strip().lower().endswith(each_street['name'].lower()):
+                        temp = temp + " " + each_street['name']
+                        break
                 newtags.append(('name', temp))
                 modified = True
                 
